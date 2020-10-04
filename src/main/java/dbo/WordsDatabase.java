@@ -1,3 +1,5 @@
+package dbo;
+
 import javax.persistence.*;
 
 @Entity

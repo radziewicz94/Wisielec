@@ -1,3 +1,7 @@
+package mainApplication;
+
+import dbo.WordsDatabase;
+
 import java.util.Random;
 
 public class Game {

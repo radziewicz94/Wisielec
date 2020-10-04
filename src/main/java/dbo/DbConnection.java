@@ -1,3 +1,5 @@
+package dbo;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -29,7 +31,7 @@ public class DbConnection {
         SessionFactory factory = conf.buildSessionFactory();
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        List<WordsDatabase> wordsList = session.createQuery("from WordsDatabase").getResultList();
+        List<WordsDatabase> wordsList = session.createQuery("from dbo.WordsDatabase").getResultList();
         for(WordsDatabase wordsDatabase : wordsList){
             System.out.println(wordsDatabase.toString());
         }
@@ -44,6 +46,18 @@ public class DbConnection {
         WordsDatabase wordsDatabase = session.get(WordsDatabase.class, id);
         wordsDatabase.setWord(word);
         session.update(wordsDatabase);
+        session.getTransaction().commit();
+        factory.close();
+    }
+    public void deleteWord(int id){
+        Configuration conf = new Configuration();
+        conf.configure("hibernate.cfg.xml");
+        conf.addAnnotatedClass(WordsDatabase.class);
+        SessionFactory factory = conf.buildSessionFactory();
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        WordsDatabase wordsDatabase = session.get(WordsDatabase.class, id);
+        session.delete(wordsDatabase);
         session.getTransaction().commit();
         factory.close();
     }

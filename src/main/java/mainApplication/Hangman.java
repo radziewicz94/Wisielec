@@ -1,6 +1,7 @@
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+package mainApplication;
+
+import dbo.DbConnection;
+import dbo.WordsDatabase;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -26,8 +27,8 @@ public class Hangman {
                     case PRINT_WORD:
                         printWords();
                         break;
-                    case UPDATE_WORD:
-                        updateWord();
+                    case UPDATE_OR_DELETE_WORD:
+                        deleteOrUpdate();
                         break;
                     case PLAY:
                         break;
@@ -36,19 +37,22 @@ public class Hangman {
 
         }while (option != Option.EXIT);
     }
-
-    private void updateWord() {
+    private void deleteOrUpdate(){
         boolean flag = false;
         do {
-            System.out.println("Podaj id słowa, jeśli nie pamiętasz możesz wyświetlić");
-            System.out.println("1 - wyświetl");
-            System.out.println("2 - nie wyświetlaj");
+            System.out.println("Podaj id słowa, która ma zostać zaktualizowane lub usunięte");
+            System.out.println("1 - zaktualizuje");
+            System.out.println("2 - usuń");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            printWords();
             try {
                 int option = scanner.nextInt();
                 scanner.nextLine();
                 if (option == 1) {
-                    printWords();
-                } else if (option == 2) {
                     System.out.println("Podaj id");
                     int id = scanner.nextInt();
                     scanner.nextLine();
@@ -57,11 +61,24 @@ public class Hangman {
                     dbConnection.updateWord(id, word);
                     flag = true;
                 }
+                else if (option == 2) {
+                    System.out.println("Podaj id");
+                    int id = scanner.nextInt();
+                    scanner.nextLine();
+                    deleteWord(id);
+                    flag = true;
+                }
             } catch (InputMismatchException e) {
                 System.out.println("Niepoprawna wartość");
                 scanner.next();
             }
         }while (!flag);
+    }
+    private void deleteWord(int id){
+        dbConnection.deleteWord(id);
+    }
+    private void updateWord(int id, String word) {
+        dbConnection.updateWord(id, word);
     }
 
     private void addWord(){
@@ -102,8 +119,8 @@ public class Hangman {
         EXIT(0, "wyjście"),
         ADD_WORLD(1, "Dodaj słowo"),
         PRINT_WORD(2, "Wyświetl słowa w bazie danych"),
-        UPDATE_WORD(3,"Zaktualizuj słowo"),
-        PLAY(5, "Graj");
+        UPDATE_OR_DELETE_WORD(3,"Zaktualizuj lub usuń słowo"),
+        PLAY(4, "Graj");
 
         private int numberOfOption;
         private String description;
