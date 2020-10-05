@@ -4,12 +4,19 @@ import dbo.DbConnection;
 import dbo.WordsDatabase;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Hangman {
 
-    DbConnection dbConnection = new DbConnection();
-    Scanner scanner = new Scanner(System.in);
+    private DbConnection dbConnection = new DbConnection();
+    private Scanner scanner = new Scanner(System.in);
+    private WordsDatabase wordsDatabase = new WordsDatabase();
+    private Game game = new Game();
+    List<WordsDatabase> wordList;
+    Hangman(){
+        wordList = dbConnection.getAllWords();
+    }
     public void applicationControl(){
 
         Option option;
@@ -31,6 +38,7 @@ public class Hangman {
                         deleteOrUpdate();
                         break;
                     case PLAY:
+                        game.getRandomWorld(wordList);
                         break;
 
                 }
@@ -88,7 +96,10 @@ public class Hangman {
 
     }
     private void printWords(){
-        dbConnection.getAllWords();
+        //dbConnection.getAllWords();
+        for (int i = 0; i < wordList.size(); i++) {
+            System.out.println(wordList.get(i));
+        }
     }
     private Option getOption(){
         boolean flag = false;

@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 @Entity
 public class WordsDatabase {
+    public static int wordCount = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -15,6 +16,7 @@ public class WordsDatabase {
 
     public WordsDatabase(String word) {
         this.word = word;
+        wordCount++;
     }
 
     public int getId() {

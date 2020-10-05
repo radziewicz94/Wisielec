@@ -23,7 +23,7 @@ public class DbConnection {
 
     }
 
-    public void getAllWords(){
+    public List<WordsDatabase> getAllWords(){
         //HashMap<Integer, String> wordsList = new HashMap<>();
         Configuration conf = new Configuration();
         conf.configure("hibernate.cfg.xml");
@@ -32,9 +32,10 @@ public class DbConnection {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         List<WordsDatabase> wordsList = session.createQuery("from dbo.WordsDatabase").getResultList();
-        for(WordsDatabase wordsDatabase : wordsList){
+        /*for(WordsDatabase wordsDatabase : wordsList){
             System.out.println(wordsDatabase.toString());
-        }
+        }*/
+        return wordsList;
     }
     public void updateWord(int id, String word){
         Configuration conf = new Configuration();
