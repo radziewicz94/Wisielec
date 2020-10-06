@@ -3,6 +3,7 @@ package dbo;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,20 @@ public class DbConnection {
             System.out.println(wordsDatabase.toString());
         }*/
         return wordsList;
+    }
+    public List<String> getWord(){
+        Configuration conf = new Configuration();
+        conf.configure("hibernate.cfg.xml");
+        conf.addAnnotatedClass(WordsDatabase.class);
+        SessionFactory factory = conf.buildSessionFactory();
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String selectWord = "select word from WordsDatabase";
+        Query query = session.createQuery(selectWord);
+        List<String> result = query.getResultList();
+        factory.close();
+
+        return result;
     }
     public void updateWord(int id, String word){
         Configuration conf = new Configuration();

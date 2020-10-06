@@ -38,7 +38,7 @@ public class Hangman {
                         deleteOrUpdate();
                         break;
                     case PLAY:
-                        game.getRandomWorld(wordList);
+                        game.getRandomWorld(dbConnection.getWord());
                         break;
 
                 }
@@ -51,11 +51,7 @@ public class Hangman {
             System.out.println("Podaj id słowa, która ma zostać zaktualizowane lub usunięte");
             System.out.println("1 - zaktualizuje");
             System.out.println("2 - usuń");
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
             printWords();
             try {
                 int option = scanner.nextInt();
