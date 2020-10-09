@@ -1,4 +1,4 @@
-package dbo;
+package model;
 
 import javax.persistence.*;
 

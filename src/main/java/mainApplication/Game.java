@@ -1,25 +1,30 @@
 package mainApplication;
 
 import dbo.DbConnection;
-import dbo.WordsDatabase;
+import model.Players;
+import model.User;
+import model.WordsDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
+
+import static mainApplication.Hangman.wordList;
 
 public class Game {
 
+    private int counts = 8;
+    private int id = 0;
     private Scanner scanner = new Scanner(System.in);
     private DbConnection dbConnection = new DbConnection();
-    WordsDatabase wordsDatabase;
+    private List<String> getWords = new ArrayList<>();
 
-    public void getRandomWorld(List<String> getWord) {
+    public void getWords(List<String> wordList) {
+        getWords = wordList;
+        getRanomWord();
+    }
+    public void getRanomWord(){
         Random random = new Random();
-        List<WordsDatabase> wordList = new ArrayList<>();
-        System.out.println("Wylosowane słowo to");
-        int id = random.nextInt(getWord.size());
-        String word = getWord.get(id);
+        int id = random.nextInt(wordList.size());
+        String word = getWords.get(id);
         hideWord(word);
     }
 
@@ -32,43 +37,58 @@ public class Game {
         for (int i = 0; i < word.length(); i++) {
             if (!Character.isWhitespace(word.charAt(i))) {
                 newWord = words.replace(i, i + 1, "*");
-
             }
         }
-        System.out.println(word);
+        User name = Players.player(id);
+        System.out.println("Gracz " + name.getUserName());
         guessWord(word, newWord);
     }
 
     private void guessWord(String word, StringBuilder hiddenWord) {
         word = word.toLowerCase();
+        boolean playsOn = true;
+        String options = "";
+        System.out.println("ukryte słowo " + hiddenWord);
+        do {
 
-        int points = 8;
-        boolean flag = false;
-        do{
-            String letter = getLetter();
+            char letter = getLetter();
             int value = word.indexOf(letter);
-            if(points > 0) {
-                try {
-                    hiddenWord.replace(value, value + 1, letter);
-                } catch (StringIndexOutOfBoundsException e) {
-                    System.out.println("nie zgadłeś");
-                    points--;
+            if (!word.contains(String.valueOf(letter))) {
+                counts--;
+            }
+            for (int i = 0; i < word.length(); i++) {
+                if (word.charAt(i) == letter) {
+                    hiddenWord.replace(i, i + 1, String.valueOf(letter));
                 }
             }
-            if(word.equals(hiddenWord))
-            {
-                System.out.println("Wygrałeś, Podane słowo to " + hiddenWord);
-                flag = true;
-            }
-            if(points == 0){
-                flag = true;
+            if (word.contentEquals(hiddenWord)) {
+                System.out.println("Wygrałeś, Podane słowo to " + hiddenWord + " użytkownika " +
+                        Players.player(id).getUserName() + " zdobywa " + counts + " punktów");
+                id++;
+                playsOn = false;
+                System.out.println("Grasz dalej?\ntak / nie");
+                options = scanner.nextLine();
+            } else if (counts == 0) {
+                id++;
+                playsOn = false;
+                System.out.println("Przegrałeś, miałeś już 8 prób");
+                System.out.println("Grasz dalej?\ntak / nie");
+                options = scanner.nextLine();
             }
             System.out.println(hiddenWord);
-        }while(!flag);
+            options.toLowerCase();
+            if(!playsOn && !options.equals("nie")){
+                getRanomWord();
+            }
+
+        } while (!options.equals("nie"));
+
     }
-    private String getLetter(){
+
+    private char getLetter() {
         System.out.println("Podaj litere");
-        String letter = scanner.nextLine();
+        char letter = scanner.next().charAt(0);
+        System.out.println(letter);
         return letter;
     }
 }

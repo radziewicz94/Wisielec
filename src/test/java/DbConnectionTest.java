@@ -1,5 +1,5 @@
 import dbo.DbConnection;
-import dbo.WordsDatabase;
+import model.WordsDatabase;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -22,7 +22,7 @@ class DbConnectionTest {
         SessionFactory factory = conf.buildSessionFactory();
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        List<WordsDatabase> wordsList = session.createQuery("from dbo.WordsDatabase").getResultList();
+        List<WordsDatabase> wordsList = session.createQuery("from model.WordsDatabase").getResultList();
         for (int i = 0; i < wordsList.size(); i++) {
             assertEquals("Id " + wordsList.get(i).getId() + " Słowo: " + wordsList.get(i).getWord(), wordsList.get(i).toString());
         }

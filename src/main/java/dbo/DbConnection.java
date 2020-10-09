@@ -1,17 +1,17 @@
 package dbo;
 
+import model.User;
+import model.WordsDatabase;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class DbConnection {
 
-    public void dbConfig(WordsDatabase wordsDatabase){
+    public void addWord(WordsDatabase wordsDatabase){
         Configuration conf = new Configuration();
         conf.configure("hibernate.cfg.xml");
         conf.addAnnotatedClass(WordsDatabase.class);
@@ -23,6 +23,9 @@ public class DbConnection {
         factory.close();
 
     }
+    public void addUser(User user){
+
+    }
 
     public List<WordsDatabase> getAllWords(){
         //HashMap<Integer, String> wordsList = new HashMap<>();
@@ -32,10 +35,8 @@ public class DbConnection {
         SessionFactory factory = conf.buildSessionFactory();
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        List<WordsDatabase> wordsList = session.createQuery("from dbo.WordsDatabase").getResultList();
-        /*for(WordsDatabase wordsDatabase : wordsList){
-            System.out.println(wordsDatabase.toString());
-        }*/
+        List<WordsDatabase> wordsList = session.createQuery("from model.WordsDatabase").getResultList();
+        factory.close();
         return wordsList;
     }
     public List<String> getWord(){

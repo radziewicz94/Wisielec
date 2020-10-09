@@ -1,7 +1,9 @@
 package mainApplication;
 
 import dbo.DbConnection;
-import dbo.WordsDatabase;
+import model.Players;
+import model.User;
+import model.WordsDatabase;
 
 import java.util.InputMismatchException;
 import java.util.List;
@@ -9,16 +11,17 @@ import java.util.Scanner;
 
 public class Hangman {
 
-    private DbConnection dbConnection = new DbConnection();
+    private final DbConnection dbConnection = new DbConnection();
     private Scanner scanner = new Scanner(System.in);
-    private WordsDatabase wordsDatabase = new WordsDatabase();
+    private final WordsDatabase wordsDatabase = new WordsDatabase();
     private Game game = new Game();
-    List<WordsDatabase> wordList;
+    private Players player = new Players();
+    private int id = 0;
+    public static List<WordsDatabase> wordList;
     Hangman(){
         wordList = dbConnection.getAllWords();
     }
     public void applicationControl(){
-
         Option option;
         do {
 
@@ -37,14 +40,28 @@ public class Hangman {
                     case UPDATE_OR_DELETE_WORD:
                         deleteOrUpdate();
                         break;
+                    case REGISTER_USER:
+                        addUser();
+                        break;
+                    case PRINT_PLAYER:
+                        player.printUsers();
+                        break;
                     case PLAY:
-                        game.getRandomWorld(dbConnection.getWord());
+                        game.getWords(dbConnection.getWord());
                         break;
 
                 }
 
         }while (option != Option.EXIT);
     }
+
+    private void addUser() {
+        System.out.println("Podaj imie gracza");
+        String playerName = scanner.nextLine();
+        player.addUser(new User(playerName));
+    }
+
+
     private void deleteOrUpdate(){
         boolean flag = false;
         do {
@@ -88,11 +105,10 @@ public class Hangman {
     private void addWord(){
         System.out.println("Słowo");
         String word = scanner.nextLine();
-        dbConnection.dbConfig(new WordsDatabase(word));
+        dbConnection.addWord(new WordsDatabase(word));
 
     }
     private void printWords(){
-        //dbConnection.getAllWords();
         for (int i = 0; i < wordList.size(); i++) {
             System.out.println(wordList.get(i));
         }
@@ -127,7 +143,9 @@ public class Hangman {
         ADD_WORLD(1, "Dodaj słowo"),
         PRINT_WORD(2, "Wyświetl słowa w bazie danych"),
         UPDATE_OR_DELETE_WORD(3,"Zaktualizuj lub usuń słowo"),
-        PLAY(4, "Graj");
+        REGISTER_USER(4, "Dodaj gracza"),
+        PRINT_PLAYER(5, "Wyświetl graczy"),
+        PLAY(6, "Graj");
 
         private int numberOfOption;
         private String description;
